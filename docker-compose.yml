@@ -1,0 +1,12 @@
+version: '2.0'
+services:
+   cinema-db-postgresql:
+    image: postgres:11.7-alpine
+    volumes:
+      - ./cinema-db.sql:/docker-entrypoint-cinema-db.d/cinema-db.sql
+    environment:
+      POSTGRES_DB: cinema_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5432:5432
