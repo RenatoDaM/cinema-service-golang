@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
-	"database/sql"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 )
 
@@ -19,10 +22,7 @@ func main() {
 		"password=%s dbname=%s sslmode=disable",
 		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 
-	fmt.Println(os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT"))
-
-	var err error
-	db, err := sql.Open("postgres", psqlInfo)	
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,5 +31,28 @@ func main() {
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
-	fmt.Println("Connected!")
+	fmt.Println("Connected! Applying migrations...")
+
+
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://migrations",
+		"postgres", driver)
+
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("Migrations applied succesfully!")
+	}
+
+	m.Up()
+
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
+	}
 }
