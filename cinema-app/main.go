@@ -2,6 +2,7 @@ package main
 
 import (
 	databaseConnector "com.cinema/cinema-app/common"
+    cinemaService "com.cinema/cinema-app/service"
 	"fmt"
     "net"
     "os"
@@ -47,7 +48,7 @@ func handleRequest(conn net.Conn) {
 	if err != nil {
 	  fmt.Println("Error reading:", err.Error())
 	}
-	
+    cinemaService.CreateCinemaSession()
 	print("request length: " + strconv.Itoa(reqLen))
 	conn.Write([]byte("Message received."))
 	conn.Close()
