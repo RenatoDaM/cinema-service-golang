@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"github.com/golang-migrate/migrate/v4"
-	"gorm.io/gorm"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	orm "gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Database struct {
@@ -76,16 +77,16 @@ func applyMigrations(db *sql.DB) {
 	}
 }
 
-func connectORM (db *sql.DB) *gorm.DB {
+func connectORM(db *sql.DB) {
 	gormDB, err := gorm.Open(orm.New(orm.Config{
 		Conn: db,
-	  }), &gorm.Config{})
+	}), &gorm.Config{})
 
 	if err != nil {
-		log.Fatal("Could't connect GORM")
+		log.Fatal("Couldn't connect GORM")
 	}
 
-	return gormDB
+	DB = gormDB
 }
 
 func GetORMConnection() *gorm.DB {
