@@ -3,7 +3,7 @@ CREATE TABLE cinema_session (
     film_name VARCHAR(255) NOT NULL,
     session_number INT NOT NULL,
     session_time TIMESTAMP NOT NULL,
-    available_seats INT NOT NULL
+    total_seats INT NOT NULL
 );
 
 CREATE TABLE ticket (
